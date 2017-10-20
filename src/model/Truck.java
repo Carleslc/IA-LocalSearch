@@ -40,4 +40,8 @@ public class Truck {
             }
         }
     }
+    
+    public List<Trip> getTrips(){
+        return this.trips;
+    }
 }
