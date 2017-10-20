@@ -1,3 +1,5 @@
+import representation.Global;
+
 public class Main {
-    // TODO
+    Global globalData = new Global();
 }

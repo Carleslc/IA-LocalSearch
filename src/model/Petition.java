@@ -2,31 +2,34 @@ package model;
 
 public class Petition {
 
-    private Integer pendingDays;
-    private Integer coordX;
-    private Integer coordy;
+    private int pendingDays;
+    private int coordX;
+    private int coordY;
 
-    public Integer getPendingDays() {
+    public int getPendingDays() {
         return pendingDays;
     }
 
-    public void setPendingDays(Integer pendingDays) {
+    public Petition setPendingDays(int pendingDays) {
         this.pendingDays = pendingDays;
+        return this;
     }
 
-    public Integer getCoordX() {
+    public int getCoordX() {
         return coordX;
     }
 
-    public void setCoordX(Integer coordX) {
+    public Petition setCoordX(int coordX) {
         this.coordX = coordX;
+        return this;
     }
 
-    public Integer getCoordy() {
-        return coordy;
+    public int getCoordY() {
+        return coordY;
     }
 
-    public void setCoordy(Integer coordy) {
-        this.coordy = coordy;
+    public Petition setCoordY(int coordY) {
+        this.coordY = coordY;
+        return this;
     }
 }
