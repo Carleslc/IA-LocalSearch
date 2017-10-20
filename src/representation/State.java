@@ -2,9 +2,11 @@ package representation;
 
 import model.Petition;
 import model.Truck;
+import model.Trip;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 public class State {
 
@@ -13,6 +15,34 @@ public class State {
 
     public State() {
         // generación del estado inicial
+        Global global = new Global();
+        for(Petition petition : global.getAllPetitions()){
+            if(!assignments.containsKey(petition)){
+                Collections.shuffle(trucks);
+                boolean found = false;
+                int i = 0;
+                while(i < trucks.size() && !found){
+                    boolean available = true;
+                    int n = trucks.get(i).getTrips().size();
+                    if(n == 5){
+                        if(trucks.get(i).getTrips().get(n-1).size() == 2) available = false;
+                    }
+                    if(available){
+                        found = true;
+                        if(n > 0) --n;
+                        if(n == 0){
+                            Trip trip = new Trip();
+                            trip.add(petition);
+                            trucks.get(i).getTrips().add(trip);
+                        }
+                        else{
+                            if(trucks.get(i).getTrips().get(n).size() == 2) n++;
+                            trucks.get(i).getTrips().get(n).add(petition);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public List<Truck> getTrucks() {
