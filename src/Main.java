@@ -1,5 +1,10 @@
-import representation.Global;
+import representation.State;
 
 public class Main {
-    Global globalData = new Global();
+
+    public static void main(String[] args) {
+        // TODO
+        new State();
+    }
+
 }
