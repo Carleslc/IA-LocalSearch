@@ -1,16 +1,6 @@
 package model;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class Trip {
-
-    private List<Petition> petitions;
-
-    public List<Petition> getPetitions() {
-        return petitions;
-    }
-
-    public void setPetitions(List<Petition> petitions) {
-        this.petitions = petitions;
-    }
+public class Trip extends ArrayList<Petition> {
 }
