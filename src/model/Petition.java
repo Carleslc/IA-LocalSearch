@@ -32,4 +32,9 @@ public class Petition {
         this.coordY = coordY;
         return this;
     }
+
+    public boolean isSameStation(Petition petition) {
+        return this.coordX == petition.coordX && this.coordY == petition.coordY;
+    }
+
 }

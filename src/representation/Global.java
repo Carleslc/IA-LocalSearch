@@ -1,7 +1,6 @@
 package representation;
 
 import IA.Gasolina.CentrosDistribucion;
-import IA.Gasolina.Distribucion;
 import IA.Gasolina.Gasolinera;
 import IA.Gasolina.Gasolineras;
 import model.Petition;

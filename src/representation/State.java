@@ -31,25 +31,13 @@ public class State {
         this.assignments = assignments;
     }
 
-    private boolean statisfiesAllRestrictions() {
-        return true; // TODO: stub
-    }
-
     public void changeTruck(Petition petition, Truck truckOne, Truck truckTwo) { // move(Pi, Tj, Tk)
-        if (statisfiesAllRestrictions()) {
-            // TODO: update trucks
-            assignments.put(petition, truckTwo);
-        } else {
-            System.err.println("The application of this operator does not satisfy all restrictions");
-        }
+        truckTwo.deletePetition(petition);
+        truckOne.addPetition(petition);
     }
 
     public void assignTruck(Petition petition, Truck truck) { // add(Pi, Tj)
-        if (statisfiesAllRestrictions()) {
-            assignments.put(petition, truck);
-        } else {
-            System.err.println("The application of this operator does not satisfy all restrictions");
-        }
+        truck.addPetition(petition);
     }
 
 }
