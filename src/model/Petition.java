@@ -38,12 +38,21 @@ public class Petition {
         return Math.abs(this.coordX - coordX) + Math.abs(this.coordY - coordY); // Manhattan distance
     }
 
+    public int getDistanceTo(Petition p) {
+        return getDistanceTo(p.getCoordX(), p.getCoordY());
+    }
+
     public int getDistanceTo(Distribucion d) {
         return getDistanceTo(d.getCoordX(), d.getCoordY());
     }
 
     public boolean isSameStation(Petition petition) {
         return this.coordX == petition.coordX && this.coordY == petition.coordY;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + coordX + ',' + coordY + "){" + pendingDays + '}';
     }
 
 }

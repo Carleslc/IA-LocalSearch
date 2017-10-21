@@ -11,6 +11,7 @@ import java.util.Random;
 
 public final class Global {
 
+    public static final int SEED = new Random().nextInt();
     private static final int DISTRIBUTION_CENTERS = 10;
     private static final int FUEL_STATIONS = 100;
     private static final int MAX_HOURS_PER_DAY = 8; // hours
@@ -20,8 +21,6 @@ public final class Global {
     public static final int KM_COST = 2;
     public static final int MAX_TRIPS_PER_TRUCK = 5;
     public static final int ASSIGNATIONS_PER_TRIP = 2; // number of tanks a truck can carry
-
-    private static final int SEED = new Random().nextInt();
 
     private static final Global INSTANCE = new Global();
 

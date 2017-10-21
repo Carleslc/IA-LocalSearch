@@ -5,25 +5,33 @@ import representation.Global;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-class Trips extends LinkedList<Trip> {
+public class Trips extends LinkedList<Trip> {
+
+    public boolean isAtMaximumSize() {
+        return size() == Global.MAX_TRIPS_PER_TRUCK;
+    }
+
+    public boolean isFull() {
+        return isAtMaximumSize() && parallelStream().allMatch(Trip::isFull);
+    }
 
     @Override
     public boolean add(Trip t) {
         throw new RuntimeException("Use addTripWithPetition instead");
     }
 
-    boolean addTripWithPetition(Petition p) throws RestrictionViolationException {
-        if (size() == Global.MAX_TRIPS_PER_TRUCK) {
-            throw new RestrictionViolationException("Trips per truck violation");
-        } else if (p == null) {
+    public void addTripWithPetition(Petition p, Truck truck) throws RestrictionViolationException {
+        if (p == null) {
             throw new IllegalArgumentException("Petition is null");
+        } else if (isAtMaximumSize()) {
+            throw new RestrictionViolationException("Trips per truck violation");
         }
         Trip trip = new Trip();
-        trip.addPetition(p);
-        return super.add(trip);
+        trip.addPetition(p, truck);
+        super.add(trip);
     }
 
-    boolean remove(Petition p) {
+    public boolean remove(Petition p) {
         Iterator<Trip> iterator = iterator();
         while (iterator.hasNext()) {
             Trip tripWithPetitions = iterator.next();

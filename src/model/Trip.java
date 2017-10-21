@@ -1,9 +1,9 @@
 package model;
 
+import IA.Gasolina.Distribucion;
 import representation.Global;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -11,23 +11,48 @@ public class Trip extends LinkedList<Petition> {
 
     @Override
     public boolean add(Petition p) {
-        throw new RuntimeException("Use addPetition instead for restriction validation");
+        throw new RuntimeException("Use addPetition instead");
     }
 
-    boolean addPetition(Petition p) throws RestrictionViolationException {
-        if (isFull()) {
-            throw new RestrictionViolationException("Trip assignations violation");
-        } else if (p == null) {
+    public void addPetition(Petition p, Truck truck) throws RestrictionViolationException {
+        if (p == null) {
             throw new IllegalArgumentException("Petition is null");
+        } else if (isFull()) {
+            throw new RestrictionViolationException("Trip assignations violation");
         }
-        return super.add(p);
+        super.add(p);
+        if (truck.getDistanceTraveled() > Global.MAX_KM_PER_DAY) {
+            removeLast();
+            throw new RestrictionViolationException("Truck kilometers violation");
+        }
     }
 
-    boolean isFull() {
+    public boolean isFull() {
         return size() == Global.ASSIGNATIONS_PER_TRIP;
+    }
+
+    public int getDistanceTraveled(Distribucion origin) {
+        int km = 0;
+        Iterator<Petition> iterator = iterator();
+        if (iterator.hasNext()) {
+            Petition prev = iterator.next();
+            km += prev.getDistanceTo(origin);
+            while (iterator.hasNext()) {
+                Petition next = iterator.next();
+                km += prev.getDistanceTo(next);
+                prev = next;
+            }
+            km += prev.getDistanceTo(origin);
+        }
+        return km;
     }
 
     Optional<Petition> findFirstPetitionWithDistinctStationThan(Petition petition) {
         return stream().filter(p -> !p.isSameStation(petition)).findFirst();
+    }
+
+    @Override
+    public String toString() {
+        return "Trip " + super.toString();
     }
 }

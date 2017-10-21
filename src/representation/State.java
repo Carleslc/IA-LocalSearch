@@ -14,7 +14,7 @@ public class State {
     private final Map<Petition, Truck> assignments;
     private List<Truck> trucks;
 
-    public State() {
+    public State(boolean initial) {
         assignments = new HashMap<>();
 
         // Generate all trucks without assignments
@@ -23,10 +23,25 @@ public class State {
         for (Distribucion origin : distributionCenters) {
             trucks.add(new Truck(origin));
         }
-        Collections.shuffle(trucks);
-        trucks = Collections.unmodifiableList(trucks);
 
-        // TODO generación del estado inicial
+        if (initial) initialState();
+
+        trucks = Collections.unmodifiableList(trucks);
+    }
+
+    private void initialState() {
+        int seed = Global.SEED;
+        for (Petition petition : Global.getInstance().getAllPetitions()) {
+            Collections.shuffle(trucks, new Random(seed++));
+            Optional<Truck> firstTruckAvailable = trucks.parallelStream().filter(truck -> !truck.isFull()).findFirst();
+            if (firstTruckAvailable.isPresent()) {
+                try {
+                    Truck truck = firstTruckAvailable.get();
+                    truck.addPetition(petition);
+                    assignments.put(petition, truck);
+                } catch (RestrictionViolationException ignore) { }
+            }
+        }
     }
 
     public List<Truck> getTrucksWithoutAssignments() {
@@ -64,6 +79,15 @@ public class State {
         }
         truck.addPetition(petition);
         assignments.put(petition, truck);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<Petition, Truck> entry : assignments.entrySet()) {
+            builder.append(entry.getKey()).append(" <- ").append(entry.getValue()).append('\n');
+        }
+        return builder.toString();
     }
 
 }
