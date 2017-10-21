@@ -21,6 +21,7 @@ public class ProblemSuccessorFunction implements SuccessorFunction {
         Collection<Truck> freeTrucks = current.getTrucksWithoutAssignments();
         System.out.println("Unserved: " + unserved.size());
         System.out.println("Free Trucks: " + freeTrucks.size());
+        // Assign operator
         for (Truck truck : freeTrucks) {
             for (Petition petition : unserved) {
                 try {
@@ -30,6 +31,7 @@ public class ProblemSuccessorFunction implements SuccessorFunction {
                 } catch (RestrictionViolationException ignore) { }
             }
         }
+        // TODO: Change operator + fixes
         return successors;
     }
 
