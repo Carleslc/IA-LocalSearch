@@ -16,6 +16,7 @@ public class Main {
 
     public static void main(String[] args) {
         State initialState = new State();
+        test(initialState);
         ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
         ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
         Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
