@@ -2,7 +2,6 @@ package representation;
 
 import aima.search.framework.HeuristicFunction;
 import model.Petition;
-import model.Truck;
 
 public class ProblemHeuristicFunction implements HeuristicFunction {
 
