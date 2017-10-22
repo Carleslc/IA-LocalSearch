@@ -22,10 +22,13 @@ public class Main {
         System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(problem.getInitialState()));
         HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
         try {
+            SearchAgent agent = null;
             long start = System.currentTimeMillis();
-            SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
+            for (int i = 0; i < 10; ++i) {
+                agent = new SearchAgent(problem, hillClimbingSearch);
+            }
             long end = System.currentTimeMillis();
-            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
+            System.out.println("Hill Climbing Time: " + (end - start)/10d + " ms");
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
             List pathStates = hillClimbingSearch.getPathStates();
