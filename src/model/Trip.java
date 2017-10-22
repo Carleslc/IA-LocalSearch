@@ -9,6 +9,12 @@ import java.util.Optional;
 
 public class Trip extends LinkedList<Petition> {
 
+    public Trip() { }
+
+    public Trip(Trip copy) {
+        super(copy);
+    }
+
     @Override
     public boolean add(Petition p) {
         throw new RuntimeException("Use addPetition instead");

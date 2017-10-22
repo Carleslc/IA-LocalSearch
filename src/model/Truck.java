@@ -16,6 +16,11 @@ public class Truck {
         trips = new Trips();
     }
 
+    public Truck(Truck copy) {
+        this.origin = copy.origin;
+        trips = new Trips(copy.trips);
+    }
+
     public boolean hasAssignments() {
         return !trips.isEmpty();
     }

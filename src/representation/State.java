@@ -14,18 +14,36 @@ public class State {
     private final Map<Petition, Truck> assignments;
     private List<Truck> trucks;
 
-    public State(boolean initial) {
+    public State() {
         assignments = new HashMap<>();
-
         // Generate all trucks without assignments
         CentrosDistribucion distributionCenters = Global.getInstance().getDistributionCenters();
         trucks = new ArrayList<>(distributionCenters.size() * Global.TRUCKS_PER_DISTRIBUTION_CENTER);
         for (Distribucion origin : distributionCenters) {
             trucks.add(new Truck(origin));
         }
+        initialState();
+        trucks = Collections.unmodifiableList(trucks);
+    }
 
-        if (initial) initialState();
-
+    public State(State copyState) {
+        assignments = new HashMap<>(copyState.assignments.size());
+        trucks = new ArrayList<>(copyState.trucks.size());
+        Map<Truck, Truck> copies = new HashMap<>(copyState.trucks.size());
+        for (Map.Entry<Petition, Truck> assignment : copyState.assignments.entrySet()) {
+            Truck original = assignment.getValue();
+            if (!copies.containsKey(original)) {
+                Truck copy = new Truck(original);
+                copies.put(original, copy);
+                trucks.add(copy);
+            }
+            assignments.put(assignment.getKey(), copies.get(original));
+        }
+        List<Truck> trucksNotAssigned = copyState.trucks.stream()
+                .filter(truck -> !truck.hasAssignments())
+                .map(Truck::new)
+                .collect(Collectors.toList());
+        trucks.addAll(trucksNotAssigned);
         trucks = Collections.unmodifiableList(trucks);
     }
 
@@ -44,40 +62,23 @@ public class State {
         }
     }
 
-    public List<Truck> getTrucksWithoutAssignments() {
-        return getTrucks(false);
-    }
-
-    public List<Truck> getTrucksWithAssignments() {
-        return getTrucks(true);
-    }
-
-    private List<Truck> getTrucks(boolean withAssignments) {
-        return trucks.stream()
-                .filter(truck -> truck.hasAssignments() == withAssignments)
-                .collect(Collectors.toList());
+    public List<Truck> getTrucks() {
+        return trucks;
     }
 
     public Map<Petition, Truck> getAssignments() {
         return assignments;
     }
 
-    // OPERATORS
-
-    public void changeTruck(Petition petition, Truck from, Truck to) throws RestrictionViolationException {
-        if (!assignments.containsKey(petition) || !assignments.get(petition).equals(from)) {
-            throw new IllegalArgumentException("Petition is not assigned to the required truck");
-        }
-        to.addPetition(petition);
-        from.deletePetition(petition);
-        assignments.put(petition, to);
-    }
-
     public void assignTruck(Petition petition, Truck truck) throws RestrictionViolationException {
-        if (assignments.containsKey(petition)) {
-            throw new IllegalArgumentException("Petition is already assigned to a truck");
+        Truck oldAssignedTruck = assignments.get(petition);
+        if (truck.equals(oldAssignedTruck)) {
+            throw new RestrictionViolationException("Petition already assigned to that truck");
         }
         truck.addPetition(petition);
+        if (oldAssignedTruck != null) {
+            oldAssignedTruck.deletePetition(petition);
+        }
         assignments.put(petition, truck);
     }
 

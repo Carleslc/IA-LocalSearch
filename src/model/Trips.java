@@ -7,6 +7,14 @@ import java.util.LinkedList;
 
 public class Trips extends LinkedList<Trip> {
 
+    public Trips() { }
+
+    public Trips(Trips copy) {
+        for (Trip copyTrip : copy) {
+            super.add(new Trip(copyTrip));
+        }
+    }
+
     public boolean isAtMaximumSize() {
         return size() == Global.MAX_TRIPS_PER_TRUCK;
     }
