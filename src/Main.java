@@ -1,4 +1,5 @@
 import aima.search.framework.Problem;
+import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import model.Petition;
@@ -18,27 +19,30 @@ public class Main {
         ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
         ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
         Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
-        System.out.println(problem.getInitialState());
-        System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(problem.getInitialState()));
+        System.out.println("Initial State:\n" + initialState);
+        System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(initialState));
+        System.out.println("Initial Total Kilometers: " + initialState.getTravelledDistance());
+        System.out.println("Initial Assigned Petitions: " + initialState.getAssignments().size());
+        System.out.println("\nCalculating Solution...\n");
         HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
         try {
-            SearchAgent agent = null;
             long start = System.currentTimeMillis();
-            for (int i = 0; i < 10; ++i) {
-                agent = new SearchAgent(problem, hillClimbingSearch);
-            }
+            SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
             long end = System.currentTimeMillis();
-            System.out.println("Hill Climbing Time: " + (end - start)/10d + " ms");
+            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
+            System.out.println("\nActions:");
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
             List pathStates = hillClimbingSearch.getPathStates();
             System.out.println();
             State last = (State) pathStates.get(pathStates.size() - 1);
-            System.out.println(last);
+            System.out.println("Final State:\n" + last);
             System.out.println("Heuristic: " + -heuristicFunction.getHeuristicValue(last));
-            System.out.println("Total petitions: " + Global.getInstance().getAllPetitions().size());
+            System.out.println("Total Kilometers: " + last.getTravelledDistance());
+            System.out.println("Total Petitions: " + Global.getInstance().getAllPetitions().size());
+            System.out.println("Assigned Petitions: " + last.getAssignments().size());
             List<Petition> unassigned = last.getUnassignedPetitions();
-            System.out.println("Unassigned petitions: " + unassigned.size());
+            System.out.println("Unassigned Petitions: " + unassigned.size());
         } catch (Exception e) {
             System.out.println("Oops, something went wrong.");
             e.printStackTrace();

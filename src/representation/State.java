@@ -70,6 +70,10 @@ public class State {
         return Global.getInstance().getAllPetitions().stream().filter(p -> !assignments.containsKey(p)).collect(Collectors.toList());
     }
 
+    public int getTravelledDistance() {
+        return trucks.stream().mapToInt(Truck::getTravelledDistance).sum();
+    }
+
     public void assignTruck(Petition petition, int truckId) throws RestrictionViolationException {
         if (truckId < 0 || truckId >= trucks.size()) {
             throw new IllegalArgumentException("Invalid truck");

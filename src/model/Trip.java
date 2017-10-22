@@ -37,7 +37,7 @@ public class Trip extends LinkedList<Petition> {
         return size() == Global.ASSIGNATIONS_PER_TRIP;
     }
 
-    public int getDistanceTraveled(Distribucion origin) {
+    public int getTravelledDistance(Distribucion origin) {
         int km = 0;
         Iterator<Petition> iterator = iterator();
         if (iterator.hasNext()) {

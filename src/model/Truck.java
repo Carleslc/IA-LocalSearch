@@ -39,7 +39,7 @@ public class Truck {
     }
 
     public int getTravelledDistance() { // In km
-        return trips.parallelStream().mapToInt(trip -> trip.getDistanceTraveled(origin)).sum();
+        return trips.parallelStream().mapToInt(trip -> trip.getTravelledDistance(origin)).sum();
     }
 
     public void addPetition(Petition petition) throws RestrictionViolationException {

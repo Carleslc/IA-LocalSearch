@@ -9,8 +9,7 @@ public class ProblemHeuristicFunction implements HeuristicFunction {
     @Override
     public double getHeuristicValue(Object state) {
         State currentState = (State) state;
-        int kmCost = Global.KM_COST * currentState.getTrucks().stream()
-                .mapToInt(Truck::getTravelledDistance).sum();
+        int kmCost = Global.KM_COST * currentState.getTravelledDistance();
         double profit = currentState.getAssignments().keySet().parallelStream().mapToDouble(this::getProfit).sum();
         return -(profit - kmCost); // Negative because we need to maximize profit but Hill Climbing minimizes
     }
@@ -21,7 +20,7 @@ public class ProblemHeuristicFunction implements HeuristicFunction {
         return Global.PETITION_SERVED_PROFIT * (100 - twoPow(days))/100d;
     }
 
-    private double twoPow(int d) {
+    private int twoPow(int d) {
         return 1 << d;
     }
 }
