@@ -13,31 +13,33 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
-//        State initialState = new State();
-//        System.out.println(initialState);
-//        test(initialState);
-//        List successors = new ProblemSuccessorFunction().getSuccessors(initialState);
-//        System.out.println("Successors: " + successors.size());
-//        for (Object successorObj : successors) {
-//            test((State) successorObj);
-//        }
-
         State initialState = new State();
-        ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
-        ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
-        Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
-        HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
-        try {
-            hillClimbingSearch.search(problem);
-        } catch (Exception e) {
-            System.out.println("Oops, something went wrong.");
+        System.out.println(initialState);
+        test(initialState);
+        List successors = new ProblemSuccessorFunction().getSuccessors(initialState);
+        System.out.println("Successors: " + successors.size());
+        for (Object successorObj : successors) {
+            test((State) successorObj);
         }
+
+//        State initialState = new State();
+//        ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
+//        ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
+//        Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
+//        HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
+//        try {
+//            hillClimbingSearch.search(problem);
+//        } catch (Exception e) {
+//            System.out.println("Oops, something went wrong.");
+//        }
 
 
     }
 
     private static boolean test(State state) {
         int i = 0;
+        ProblemHeuristicFunction heuristic = new ProblemHeuristicFunction();
+        System.out.println("Heuristic value for this node: " + heuristic.getHeuristicValue(state));
         for (Truck truck : state.getTrucks()) {
             if (truck.getId() != i++) {
                 System.out.println("TRUCK ID " + truck.getId() + " DOES NOT MATCH WITH LIST POSITION: " + i);
