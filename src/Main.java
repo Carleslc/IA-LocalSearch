@@ -28,6 +28,7 @@ public class Main {
             if (truck.getId() != i++) {
                 System.out.println("TRUCK ID " + truck.getId() + " DOES NOT MATCH WITH LIST POSITION: " + i);
                 System.out.println(truck);
+                return false;
             }
             if (truck.getDistanceTraveled() > Global.MAX_KM_PER_DAY) {
                 System.out.println("MAX_KM_PER_DAY");
