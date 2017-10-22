@@ -1,6 +1,7 @@
 package representation;
 
 import aima.search.framework.HeuristicFunction;
+import model.Petition;
 import model.Truck;
 
 public class ProblemHeuristicFunction implements HeuristicFunction {
@@ -10,8 +11,17 @@ public class ProblemHeuristicFunction implements HeuristicFunction {
         State currentState = (State) state;
         int kmCost = Global.KM_COST * currentState.getTrucks().stream()
                 .mapToInt(Truck::getTravelledDistance).sum();
-        int attendedPetitionsAmount = currentState.getAssignments().size();
-        return (double) (Global.PETITION_SERVED_PROFIT * attendedPetitionsAmount - kmCost);
+        double profit = currentState.getAssignments().keySet().parallelStream().mapToDouble(this::getProfit).sum();
+        return -(profit - kmCost); // Negative because we need to maximize profit but Hill Climbing minimizes
     }
 
+    private double getProfit(Petition petition) {
+        int days = petition.getPendingDays();
+        if (days == 0) return Global.PETITION_SERVED_PROFIT * 1.02;
+        return Global.PETITION_SERVED_PROFIT * (100 - twoPow(days))/100d;
+    }
+
+    private double twoPow(int d) {
+        return 1 << d;
+    }
 }
