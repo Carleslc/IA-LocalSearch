@@ -1,45 +1,64 @@
-import aima.search.framework.GoalTest;
 import aima.search.framework.Problem;
+import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import model.Petition;
 import model.Trip;
 import model.Truck;
-import representation.*;
+import representation.Global;
+import representation.ProblemHeuristicFunction;
+import representation.ProblemSuccessorFunction;
+import representation.State;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
         State initialState = new State();
-        System.out.println(initialState);
-        test(initialState);
-        List successors = new ProblemSuccessorFunction().getSuccessors(initialState);
-        System.out.println("Successors: " + successors.size());
-        for (Object successorObj : successors) {
-            test((State) successorObj);
+        ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
+        ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
+        Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
+        System.out.println(problem.getInitialState());
+        System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(problem.getInitialState()));
+        HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
+        try {
+            long start = System.currentTimeMillis();
+            SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
+            long end = System.currentTimeMillis();
+            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
+            printActions(agent.getActions());
+            printInstrumentation(agent.getInstrumentation());
+            List pathStates = hillClimbingSearch.getPathStates();
+            System.out.println();
+            State last = (State) pathStates.get(pathStates.size() - 1);
+            System.out.println(last);
+            System.out.println("Heuristic: " + -heuristicFunction.getHeuristicValue(last));
+            System.out.println("Total petitions: " + Global.getInstance().getAllPetitions().size());
+            List<Petition> unassigned = last.getUnassignedPetitions();
+            System.out.println("Unassigned petitions: " + unassigned.size());
+        } catch (Exception e) {
+            System.out.println("Oops, something went wrong.");
+            e.printStackTrace();
         }
+    }
 
-//        State initialState = new State();
-//        ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
-//        ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
-//        Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
-//        HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
-//        try {
-//            hillClimbingSearch.search(problem);
-//        } catch (Exception e) {
-//            System.out.println("Oops, something went wrong.");
-//        }
+    private static void printInstrumentation(Properties properties) {
+        for (Object o : properties.keySet()) {
+            String key = (String) o;
+            String property = properties.getProperty(key);
+            System.out.println(key + " : " + property);
+        }
+    }
 
-
+    private static void printActions(List actions) {
+        for (Object action1 : actions) {
+            String action = (String) action1;
+            System.out.println(action);
+        }
     }
 
     private static boolean test(State state) {
         int i = 0;
-        ProblemHeuristicFunction heuristic = new ProblemHeuristicFunction();
-        System.out.println("Heuristic value for this node: " + heuristic.getHeuristicValue(state));
         for (Truck truck : state.getTrucks()) {
             if (truck.getId() != i++) {
                 System.out.println("TRUCK ID " + truck.getId() + " DOES NOT MATCH WITH LIST POSITION: " + i);

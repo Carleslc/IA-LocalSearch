@@ -66,6 +66,10 @@ public class State {
         return Collections.unmodifiableMap(assignments);
     }
 
+    public List<Petition> getUnassignedPetitions() {
+        return Global.getInstance().getAllPetitions().stream().filter(p -> !assignments.containsKey(p)).collect(Collectors.toList());
+    }
+
     public void assignTruck(Petition petition, int truckId) throws RestrictionViolationException {
         if (truckId < 0 || truckId >= trucks.size()) {
             throw new IllegalArgumentException("Invalid truck");
