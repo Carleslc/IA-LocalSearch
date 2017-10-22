@@ -8,17 +8,26 @@ import java.util.function.Predicate;
 
 public class Truck {
 
+    private static int idGenerator = 0;
+
+    private final int id;
     private Distribucion origin;
     private Trips trips;
 
     public Truck(Distribucion origin) {
+        this.id = idGenerator++;
         this.origin = origin;
         trips = new Trips();
     }
 
     public Truck(Truck copy) {
+        this.id = copy.id;
         this.origin = copy.origin;
         trips = new Trips(copy.trips);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public boolean hasAssignments() {
@@ -49,19 +58,26 @@ public class Truck {
             } else {
                 // Trip is full so we need to reallocate a petition from different station to another trip
                 Petition distinct = trip.findFirstPetitionWithDistinctStationThan(petition).get();
-                addPetitionToFirstAvailableTrip(distinct);
+                // Move the petition with different station to another trip
                 trip.remove(distinct);
+                try {
+                    addPetitionToFirstAvailableTrip(distinct, t -> !t.equals(trip) && !t.isFull());
+                } catch (RestrictionViolationException cannotMove) {
+                    // Petition cannot be moved to another trip, so put it again to this trip
+                    trip.addPetition(distinct, this);
+                    throw cannotMove;
+                }
                 // Then add the original petition to this trip
                 trip.addPetition(petition, this);
             }
         } else {
             // There is no current available trip that travels to the same station, so add to the first available trip
-            addPetitionToFirstAvailableTrip(petition);
+            addPetitionToFirstAvailableTrip(petition, t -> !t.isFull());
         }
     }
 
-    private void addPetitionToFirstAvailableTrip(Petition petition) throws RestrictionViolationException {
-        Optional<Trip> tripNotFull = trips.stream().filter(trip -> !trip.isFull()).findFirst();
+    private void addPetitionToFirstAvailableTrip(Petition petition, Predicate<Trip> notFullFunction) throws RestrictionViolationException {
+        Optional<Trip> tripNotFull = trips.stream().filter(notFullFunction).findFirst();
         if (tripNotFull.isPresent()) {
             tripNotFull.get().addPetition(petition, this);
         } else {
@@ -89,6 +105,16 @@ public class Truck {
 
     public Trips getTrips() {
         return trips;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || o != null && getClass() == o.getClass() && id == ((Truck) o).id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
     @Override

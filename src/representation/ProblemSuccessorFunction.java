@@ -19,7 +19,7 @@ public class ProblemSuccessorFunction implements SuccessorFunction {
             for (Truck truck : trucks) {
                 try {
                     State next = new State(current);
-                    next.assignTruck(petition, truck);
+                    next.assignTruck(petition, truck.getId());
                     successors.add(next);
                 } catch (RestrictionViolationException ignore) { }
             }

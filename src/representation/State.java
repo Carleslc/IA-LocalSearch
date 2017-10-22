@@ -18,45 +18,41 @@ public class State {
         assignments = new HashMap<>();
         // Generate all trucks without assignments
         CentrosDistribucion distributionCenters = Global.getInstance().getDistributionCenters();
-        trucks = new ArrayList<>(distributionCenters.size() * Global.TRUCKS_PER_DISTRIBUTION_CENTER);
+        trucks = new ArrayList<>();
         for (Distribucion origin : distributionCenters) {
             trucks.add(new Truck(origin));
         }
-        initialState();
         trucks = Collections.unmodifiableList(trucks);
+        initialState();
     }
 
     public State(State copyState) {
         assignments = new HashMap<>(copyState.assignments.size());
-        trucks = new ArrayList<>(copyState.trucks.size());
-        Map<Truck, Truck> copies = new HashMap<>(copyState.trucks.size());
+        trucks = new ArrayList<>(Collections.nCopies(copyState.trucks.size(), null));
         for (Map.Entry<Petition, Truck> assignment : copyState.assignments.entrySet()) {
             Truck original = assignment.getValue();
-            if (!copies.containsKey(original)) {
-                Truck copy = new Truck(original);
-                copies.put(original, copy);
-                trucks.add(copy);
+            if (trucks.get(original.getId()) == null) {
+                trucks.set(original.getId(), new Truck(original));
             }
-            assignments.put(assignment.getKey(), copies.get(original));
+            assignments.put(assignment.getKey(), trucks.get(original.getId()));
         }
         List<Truck> trucksNotAssigned = copyState.trucks.stream()
                 .filter(truck -> !truck.hasAssignments())
                 .map(Truck::new)
                 .collect(Collectors.toList());
-        trucks.addAll(trucksNotAssigned);
+        trucksNotAssigned.forEach(truck -> trucks.set(truck.getId(), truck));
         trucks = Collections.unmodifiableList(trucks);
     }
 
     private void initialState() {
         int seed = Global.SEED;
         for (Petition petition : Global.getInstance().getAllPetitions()) {
-            Collections.shuffle(trucks, new Random(seed++));
-            Optional<Truck> firstTruckAvailable = trucks.parallelStream().filter(truck -> !truck.isFull()).findFirst();
+            List<Truck> randomTrucks = new ArrayList<>(trucks);
+            Collections.shuffle(randomTrucks, new Random(seed++));
+            Optional<Truck> firstTruckAvailable = randomTrucks.parallelStream().filter(truck -> !truck.isFull()).findFirst();
             if (firstTruckAvailable.isPresent()) {
                 try {
-                    Truck truck = firstTruckAvailable.get();
-                    truck.addPetition(petition);
-                    assignments.put(petition, truck);
+                    assignTruck(petition, firstTruckAvailable.get().getId());
                 } catch (RestrictionViolationException ignore) { }
             }
         }
@@ -67,16 +63,21 @@ public class State {
     }
 
     public Map<Petition, Truck> getAssignments() {
-        return assignments;
+        return Collections.unmodifiableMap(assignments);
     }
 
-    public void assignTruck(Petition petition, Truck truck) throws RestrictionViolationException {
+    public void assignTruck(Petition petition, int truckId) throws RestrictionViolationException {
+        if (truckId < 0 || truckId >= trucks.size()) {
+            throw new IllegalArgumentException("Invalid truck");
+        }
         Truck oldAssignedTruck = assignments.get(petition);
-        if (truck.equals(oldAssignedTruck)) {
+        boolean newPetition = oldAssignedTruck == null;
+        if (!newPetition && truckId == oldAssignedTruck.getId()) {
             throw new RestrictionViolationException("Petition already assigned to that truck");
         }
+        Truck truck = trucks.get(truckId);
         truck.addPetition(petition);
-        if (oldAssignedTruck != null) {
+        if (!newPetition) {
             oldAssignedTruck.deletePetition(petition);
         }
         assignments.put(petition, truck);

@@ -52,7 +52,7 @@ public class Petition {
 
     @Override
     public String toString() {
-        return "(" + coordX + ',' + coordY + "){" + pendingDays + '}';
+        return "(" + coordX + ',' + coordY + "){" + pendingDays + "}@" + hashCode();
     }
 
 }

@@ -19,6 +19,7 @@ public final class Global {
     public static final int MAX_KM_PER_DAY = MAX_HOURS_PER_DAY * TRUCK_SPEED;
     public static final int TRUCKS_PER_DISTRIBUTION_CENTER = 1;
     public static final int KM_COST = 2;
+    public static final int PETITION_SERVED_PROFIT = 1000;
     public static final int MAX_TRIPS_PER_TRUCK = 5;
     public static final int ASSIGNATIONS_PER_TRIP = 2; // number of tanks a truck can carry
 
