@@ -38,7 +38,7 @@ public class Truck {
         return trips.isFull();
     }
 
-    public int getDistanceTraveled() { // In km
+    public int getTravelledDistance() { // In km
         return trips.parallelStream().mapToInt(trip -> trip.getDistanceTraveled(origin)).sum();
     }
 
@@ -119,6 +119,6 @@ public class Truck {
 
     @Override
     public String toString() {
-        return "Truck [" + getDistanceTraveled() + " km] (" + origin.getCoordX() + ',' + origin.getCoordY() + "): " + trips.toString();
+        return "Truck [" + getTravelledDistance() + " km] (" + origin.getCoordX() + ',' + origin.getCoordY() + "): " + trips.toString();
     }
 }

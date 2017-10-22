@@ -1,9 +1,10 @@
+import aima.search.framework.GoalTest;
+import aima.search.framework.Problem;
+import aima.search.informed.HillClimbingSearch;
 import model.Petition;
 import model.Trip;
 import model.Truck;
-import representation.Global;
-import representation.ProblemSuccessorFunction;
-import representation.State;
+import representation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,14 +13,27 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
+//        State initialState = new State();
+//        System.out.println(initialState);
+//        test(initialState);
+//        List successors = new ProblemSuccessorFunction().getSuccessors(initialState);
+//        System.out.println("Successors: " + successors.size());
+//        for (Object successorObj : successors) {
+//            test((State) successorObj);
+//        }
+
         State initialState = new State();
-        System.out.println(initialState);
-        test(initialState);
-        List successors = new ProblemSuccessorFunction().getSuccessors(initialState);
-        System.out.println("Successors: " + successors.size());
-        for (Object successorObj : successors) {
-            test((State) successorObj);
+        ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
+        ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
+        Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
+        HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
+        try {
+            hillClimbingSearch.search(problem);
+        } catch (Exception e) {
+            System.out.println("Oops, something went wrong.");
         }
+
+
     }
 
     private static boolean test(State state) {
@@ -30,7 +44,7 @@ public class Main {
                 System.out.println(truck);
                 return false;
             }
-            if (truck.getDistanceTraveled() > Global.MAX_KM_PER_DAY) {
+            if (truck.getTravelledDistance() > Global.MAX_KM_PER_DAY) {
                 System.out.println("MAX_KM_PER_DAY");
                 System.out.println(truck);
                 return false;

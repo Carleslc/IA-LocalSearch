@@ -27,7 +27,7 @@ public class Trip extends LinkedList<Petition> {
             throw new RestrictionViolationException("Trip assignations violation");
         }
         super.add(p);
-        if (truck.getDistanceTraveled() > Global.MAX_KM_PER_DAY) {
+        if (truck.getTravelledDistance() > Global.MAX_KM_PER_DAY) {
             removeLast();
             throw new RestrictionViolationException("Truck kilometers violation");
         }

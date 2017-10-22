@@ -7,11 +7,10 @@ import model.Petition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public final class Global {
 
-    public static final int SEED = new Random().nextInt();
+    public static final int SEED = 1234; // new Random().nextInt()
     private static final int DISTRIBUTION_CENTERS = 10;
     private static final int FUEL_STATIONS = 100;
     private static final int MAX_HOURS_PER_DAY = 8; // hours
