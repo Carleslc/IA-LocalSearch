@@ -23,7 +23,6 @@ public class State {
             trucks.add(new Truck(origin));
         }
         trucks = Collections.unmodifiableList(trucks);
-        //initialState();
     }
 
     public State(State copyState) {
@@ -42,20 +41,6 @@ public class State {
                 .collect(Collectors.toList());
         trucksNotAssigned.forEach(truck -> trucks.set(truck.getId(), truck));
         trucks = Collections.unmodifiableList(trucks);
-    }
-
-    private void initialState() {
-        int seed = Global.SEED;
-        for (Petition petition : Global.getInstance().getAllPetitions()) {
-            List<Truck> randomTrucks = new ArrayList<>(trucks);
-            Collections.shuffle(randomTrucks, new Random(seed++));
-            Optional<Truck> firstTruckAvailable = randomTrucks.parallelStream().filter(truck -> !truck.isFull()).findFirst();
-            if (firstTruckAvailable.isPresent()) {
-                try {
-                    assignTruck(petition, firstTruckAvailable.get().getId());
-                } catch (RestrictionViolationException ignore) { }
-            }
-        }
     }
 
     public List<Truck> getTrucks() {
