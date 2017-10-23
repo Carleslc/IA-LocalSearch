@@ -7,9 +7,7 @@ import model.RestrictionViolationException;
 import model.Truck;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProblemSuccessorFunction implements SuccessorFunction {
 
@@ -34,8 +32,8 @@ public class ProblemSuccessorFunction implements SuccessorFunction {
                             if (!current.isAssignedToTruck(newPetition, truck)) {
                                 State next = new State(current);
                                 next.assignPetition(truck.getId(), petition, newPetition);
-                                //double heuristic = Math.abs(heuristicFunction.getHeuristicValue(next));
-                                //if (heuristic > max) max = heuristic;
+                                double heuristic = Math.abs(heuristicFunction.getHeuristicValue(next));
+                                if (heuristic > max) max = heuristic;
                                 successors.add(new Successor("Substitute Petition " + petition + " for "
                                         + newPetition + " in " + truck, next));
                                 count++;
@@ -46,8 +44,8 @@ public class ProblemSuccessorFunction implements SuccessorFunction {
                 try {
                     State next = new State(current);
                     next.assignTruck(petition, truck.getId());
-                    //double heuristic = Math.abs(heuristicFunction.getHeuristicValue(next));
-                    //if (heuristic > max) max = heuristic;
+                    double heuristic = Math.abs(heuristicFunction.getHeuristicValue(next));
+                    if (heuristic > max) max = heuristic;
                     successors.add(new Successor("Assign " + next.getTrucks().get(truck.getId()) + " to Petition " + petition, next));
                     count++;
                 } catch (RestrictionViolationException ignore) { }
