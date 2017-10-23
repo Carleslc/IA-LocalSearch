@@ -79,9 +79,7 @@ public class State {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (Map.Entry<Petition, Truck> entry : assignments.entrySet()) {
-            builder.append(entry.getKey()).append(" <- ").append(entry.getValue()).append('\n');
-        }
+        trucks.forEach(truck -> builder.append(truck).append('\n'));
         return builder.toString();
     }
 
