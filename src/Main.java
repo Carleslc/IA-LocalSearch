@@ -30,7 +30,6 @@ public class Main {
             long start = System.currentTimeMillis();
             SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
             long end = System.currentTimeMillis();
-            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
             System.out.println("\nActions:");
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
@@ -42,8 +41,11 @@ public class Main {
             System.out.println("Total Kilometers: " + last.getTravelledDistance());
             System.out.println("Total Petitions: " + Global.getInstance().getAllPetitions().size());
             System.out.println("Assigned Petitions: " + last.getAssignments().size());
+            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
+            System.out.println("Hill Climbing Time: " + (end - start)/(1000 * 60) + " min, " + (end - start)%(1000*60) +  " s");
             List<Petition> unassigned = last.getUnassignedPetitions();
             System.out.println("Unassigned Petitions: " + unassigned.size());
+
         } catch (Exception e) {
             System.out.println("Oops, something went wrong.");
             e.printStackTrace();

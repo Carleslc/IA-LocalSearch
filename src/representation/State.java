@@ -23,7 +23,7 @@ public class State {
             trucks.add(new Truck(origin));
         }
         trucks = Collections.unmodifiableList(trucks);
-        initialState();
+        //initialState();
     }
 
     public State(State copyState) {
@@ -53,7 +53,8 @@ public class State {
             if (firstTruckAvailable.isPresent()) {
                 try {
                     assignTruck(petition, firstTruckAvailable.get().getId());
-                } catch (RestrictionViolationException ignore) { }
+                } catch (RestrictionViolationException ignore) {
+                }
             }
         }
     }
@@ -74,10 +75,14 @@ public class State {
         return trucks.stream().mapToInt(Truck::getTravelledDistance).sum();
     }
 
-    public void assignTruck(Petition petition, int truckId) throws RestrictionViolationException {
+    private void validateTruck(int truckId) {
         if (truckId < 0 || truckId >= trucks.size()) {
             throw new IllegalArgumentException("Invalid truck");
         }
+    }
+
+    public void assignTruck(Petition petition, int truckId) throws RestrictionViolationException {
+        validateTruck(truckId);
         Truck oldAssignedTruck = assignments.get(petition);
         boolean newPetition = oldAssignedTruck == null;
         if (!newPetition && truckId == oldAssignedTruck.getId()) {
@@ -89,6 +94,37 @@ public class State {
             oldAssignedTruck.deletePetition(petition);
         }
         assignments.put(petition, truck);
+    }
+
+    public void assignPetition(int truckId, Petition oldPetition, Petition newPetition) throws RestrictionViolationException {
+        validateTruck(truckId);
+        Truck truck = trucks.get(truckId);
+        if (!isAssignedToTruck(oldPetition, truck)) {
+            throw new IllegalArgumentException("This petition is not assigned to that truck");
+        }
+        try {
+            unassign(oldPetition);
+            assignTruck(newPetition, truckId);
+        } catch (RestrictionViolationException e) {
+            assignTruck(oldPetition, truckId);
+            throw e;
+        }
+    }
+
+    public boolean isAssignedToTruck(Petition petition, Truck truck) {
+        return truck.equals(assignments.get(petition));
+    }
+
+    public boolean isAssigned(Petition petition) {
+        return assignments.containsKey(petition);
+    }
+
+    public void unassign(Petition petition) {
+        if (!isAssigned(petition)) {
+            throw new IllegalArgumentException("Petition not assigned");
+        }
+        Truck assignedTruck = assignments.remove(petition);
+        assignedTruck.deletePetition(petition);
     }
 
     @Override
