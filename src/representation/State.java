@@ -74,6 +74,18 @@ public class State {
         return trucks.stream().mapToInt(Truck::getTravelledDistance).sum();
     }
 
+    public boolean isAssigned(Petition petition) {
+        return assignments.containsKey(petition);
+    }
+
+    public void unassign(Petition petition) {
+        if (!isAssigned(petition)) {
+            throw new IllegalArgumentException("Petition not assigned");
+        }
+        Truck assignedTruck = assignments.remove(petition);
+        assignedTruck.deletePetition(petition);
+    }
+
     public void assignTruck(Petition petition, int truckId) throws RestrictionViolationException {
         if (truckId < 0 || truckId >= trucks.size()) {
             throw new IllegalArgumentException("Invalid truck");
