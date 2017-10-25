@@ -1,5 +1,4 @@
 import aima.search.framework.Problem;
-import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import model.Petition;
@@ -10,7 +9,11 @@ import representation.ProblemHeuristicFunction;
 import representation.ProblemSuccessorFunction;
 import representation.State;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -30,7 +33,6 @@ public class Main {
             long start = System.currentTimeMillis();
             SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
             long end = System.currentTimeMillis();
-            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
             System.out.println("\nActions:");
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
@@ -39,15 +41,27 @@ public class Main {
             State last = (State) pathStates.get(pathStates.size() - 1);
             System.out.println("Final State:\n" + last);
             System.out.println("Heuristic: " + -heuristicFunction.getHeuristicValue(last));
+            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
             System.out.println("Total Kilometers: " + last.getTravelledDistance());
             System.out.println("Total Petitions: " + Global.getInstance().getAllPetitions().size());
             System.out.println("Assigned Petitions: " + last.getAssignments().size());
             List<Petition> unassigned = last.getUnassignedPetitions();
             System.out.println("Unassigned Petitions: " + unassigned.size());
+            for (int i = 0; i <= 3; i++) {
+                printPendingDays(unassigned, i);
+            }
         } catch (Exception e) {
             System.out.println("Oops, something went wrong.");
             e.printStackTrace();
         }
+    }
+
+    private static void printPendingDays(List<Petition> unassigned, int days) {
+        List<Petition> unassignedWithPendingDays = unassigned.stream()
+                .filter(petition -> petition.getPendingDays() == days)
+                .collect(Collectors.toList());
+        System.out.println("Unassigned with " + days + " pending days: ["
+                + unassignedWithPendingDays.size() + "] " + unassignedWithPendingDays);
     }
 
     private static void printInstrumentation(Properties properties) {
