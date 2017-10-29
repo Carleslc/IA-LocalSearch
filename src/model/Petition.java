@@ -7,6 +7,14 @@ public class Petition {
     private int pendingDays;
     private int coordX, coordY;
 
+    public Petition() {}
+    
+    public Petition(Petition petition) {
+        this.pendingDays = petition.pendingDays;
+        this.coordX = petition.coordX;
+        this.coordY = petition.coordY;
+    }
+
     public int getPendingDays() {
         return pendingDays;
     }
