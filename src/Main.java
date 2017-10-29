@@ -30,7 +30,6 @@ public class Main {
             long start = System.currentTimeMillis();
             SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
             long end = System.currentTimeMillis();
-            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
             System.out.println("\nActions:");
             printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
@@ -39,6 +38,7 @@ public class Main {
             State last = (State) pathStates.get(pathStates.size() - 1);
             System.out.println("Final State:\n" + last);
             System.out.println("Heuristic: " + -heuristicFunction.getHeuristicValue(last));
+            System.out.println("Hill Climbing Time: " + (end - start) + " ms");
             System.out.println("Total Kilometers: " + last.getTravelledDistance());
             System.out.println("Total Petitions: " + Global.getInstance().getAllPetitions().size());
             System.out.println("Assigned Petitions: " + last.getAssignments().size());
