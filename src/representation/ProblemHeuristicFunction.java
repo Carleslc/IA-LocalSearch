@@ -11,7 +11,7 @@ public class ProblemHeuristicFunction implements HeuristicFunction {
         int kmCost = Global.KM_COST * currentState.getTravelledDistance();
         double profit = currentState.getAssignments().keySet().parallelStream().mapToDouble(this::getProfit).sum();
         double profitNextDay = currentState.getUnassignedPetitions().parallelStream().mapToDouble(this::getProfitNextDay).sum();
-        return -(profit - kmCost + profitNextDay); // Negative because we need to maximize profit but Hill Climbing minimizes
+        return -(profit - kmCost - profitNextDay); // Negative because we need to maximize profit but Hill Climbing minimizes
     }
 
     private double getProfit(Petition petition) {
