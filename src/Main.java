@@ -26,7 +26,7 @@ public class Main {
         System.out.println("Initial State:\n" + initialState);
         System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(initialState));
         System.out.println("Initial Total Kilometers: " + initialState.getTravelledDistance());
-        System.out.println("Initial Assigned Petitions: " + initialState.getAssignments().size());
+        System.out.println("Initial Total Petitions: " + Global.getInstance().getAllPetitions().size());
         System.out.println("\nCalculating Solution...\n");
         HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
         try {
