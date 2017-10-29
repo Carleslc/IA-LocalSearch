@@ -13,7 +13,7 @@ public final class Global {
     public static final int SEED = 1234; // new Random().nextInt()
     private static final int DISTRIBUTION_CENTERS = 10;
     private static final int FUEL_STATIONS = 100;
-    private static final int MAX_HOURS_PER_DAY = 7; // hours
+    private static final int MAX_HOURS_PER_DAY = 8; // hours
     private static final int TRUCK_SPEED = 80; // km/h
     public static final int MAX_KM_PER_DAY = MAX_HOURS_PER_DAY * TRUCK_SPEED;
     public static final int TRUCKS_PER_DISTRIBUTION_CENTER = 1;
