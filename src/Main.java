@@ -9,10 +9,7 @@ import representation.ProblemHeuristicFunction;
 import representation.ProblemSuccessorFunction;
 import representation.State;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -23,6 +20,7 @@ public class Main {
         ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
         ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
         Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
+        System.out.println("SEED: " + Global.SEED);
         System.out.println("Initial State:\n" + initialState);
         System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(initialState));
         System.out.println("Initial Total Kilometers: " + initialState.getTravelledDistance());
@@ -45,10 +43,14 @@ public class Main {
             System.out.println("Total Kilometers: " + last.getTravelledDistance());
             System.out.println("Total Petitions: " + Global.getInstance().getAllPetitions().size());
             System.out.println("Assigned Petitions: " + last.getAssignments().size());
+            List<Petition> assigned = new LinkedList<>(last.getAssignments().keySet());
+            for (int i = 0; i <= 3; i++) {
+                printPendingDays("Assigned", assigned, i);
+            }
             List<Petition> unassigned = last.getUnassignedPetitions();
             System.out.println("Unassigned Petitions: " + unassigned.size());
             for (int i = 0; i <= 3; i++) {
-                printPendingDays(unassigned, i);
+                printPendingDays("Unassigned", unassigned, i);
             }
         } catch (Exception e) {
             System.out.println("Oops, something went wrong.");
@@ -56,12 +58,12 @@ public class Main {
         }
     }
 
-    private static void printPendingDays(List<Petition> unassigned, int days) {
-        List<Petition> unassignedWithPendingDays = unassigned.stream()
+    private static void printPendingDays(String title, List<Petition> petitions, int days) {
+        List<Petition> petitionsOfDays = petitions.stream()
                 .filter(petition -> petition.getPendingDays() == days)
                 .collect(Collectors.toList());
-        System.out.println("Unassigned with " + days + " pending days: ["
-                + unassignedWithPendingDays.size() + "] " + unassignedWithPendingDays);
+        System.out.println(title + " with " + days + " pending days: ["
+                + petitionsOfDays.size() + "] " + petitionsOfDays);
     }
 
     private static void printInstrumentation(Properties properties) {
