@@ -23,7 +23,7 @@ public class State {
             trucks.add(new Truck(origin));
         }
         trucks = Collections.unmodifiableList(trucks);
-        initialState();
+        //initialState(); // Uncomment to use the random initial state
     }
 
     public State(State copyState) {
