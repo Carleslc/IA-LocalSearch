@@ -22,33 +22,25 @@ public class Main {
     public static void main(String[] args) {
         State initialState = new State();
         test(initialState);
-        //ProblemSuccessorFunction successorFunction = new ProblemSuccessorFunction();
         ProblemSuccessorFunctionSA successorFunctionSA = new ProblemSuccessorFunctionSA();
         ProblemHeuristicFunction heuristicFunction = new ProblemHeuristicFunction();
-        //Problem problem = new Problem(initialState, successorFunction, isGoalState -> false, heuristicFunction);
         Problem problem = new Problem(initialState, successorFunctionSA, isGoalState -> false, heuristicFunction);
         System.out.println("Initial State:\n" + initialState);
         System.out.println("Initial Heuristic: " + -heuristicFunction.getHeuristicValue(initialState));
         System.out.println("Initial Total Kilometers: " + initialState.getTravelledDistance());
         System.out.println("Initial Total Petitions: " + Global.getInstance().getAllPetitions().size());
         System.out.println("\nCalculating Solution...\n");
-        //HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
         SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(100000,1000,10,0.1);
         try {
             long start = System.currentTimeMillis();
-            //SearchAgent agent = new SearchAgent(problem, hillClimbingSearch);
             SearchAgent agent = new SearchAgent(problem, simulatedAnnealingSearch);
             long end = System.currentTimeMillis();
-            System.out.println("\nActions:");
-            //printActions(agent.getActions());
             printInstrumentation(agent.getInstrumentation());
-            //List pathStates = hillClimbingSearch.getPathStates();
             List pathStates = simulatedAnnealingSearch.getPathStates();
             System.out.println();
             State last = (State) pathStates.get(pathStates.size() - 1);
             System.out.println("Final State:\n" + last);
             System.out.println("Heuristic: " + -heuristicFunction.getHeuristicValue(last));
-            //System.out.println("Hill Climbing Time: " + (end - start) + " ms");
             System.out.println("Simulated Annealing Time: " + (end - start) + " ms");
             System.out.println("Total Kilometers: " + last.getTravelledDistance());
             System.out.println("Total Petitions: " + Global.getInstance().getAllPetitions().size());
